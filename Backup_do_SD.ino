@@ -1,20 +1,21 @@
 /*
  * Cadastro e backup dos dados em um sd
- * Pedro Mesmer, 2016
+ * Pedro Mesmer
  */
  
 #include <SD.h>
 #include <SPI.h>
 
 File myFile;
-
-char senha [10][4];
+int linhas = 10;
+int colunas = 4;
+char senha [linhas][colunas];
 
 void setup() {
   Serial.begin(9600);
   SPI.begin();
 
-  if (!SD.begin(4)) {
+  if (!SD.begin(4)) { // pino CS do SD no Digital 4
     Serial.println("SD não funcionou");
     while (1) { 
       // trava o programa! Verifique as conexões do SD e reinicie o dispositivo
@@ -24,8 +25,8 @@ void setup() {
   }
 
   // Define tudo como 0
-  for (int i = 0; i < 10; i++) {
-    for (int j = 0; j < 4; j++) {
+  for (int i = 0; i < linhas; i++) {
+    for (int j = 0; j < colunas; j++) {
       senha[i][j] = '0';
     }
   }
@@ -34,8 +35,8 @@ void setup() {
     myFile = SD.open("senha.txt", FILE_WRITE);
     if (myFile) {
       Serial.println("Criando arquivo 'senhas.txt' zerao no SD");
-      for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 4; j++) {
+      for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
           myFile.print(senha[i][j]);
         }
       }
@@ -45,8 +46,8 @@ void setup() {
     myFile = SD.open("senha.txt", FILE_READ);
     if (myFile) {
       Serial.println("Salvando senhas do SD no programa");
-      for (int i = 0; i < 10; i++) {
-        for (int j = 0; j < 4; j++) {
+      for (int i = 0; i < linhas; i++) {
+        for (int j = 0; j < colunas; j++) {
           senha[i][j] = myFile.read();
         }
       }
